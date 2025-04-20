@@ -1,122 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Instructor Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <nav>
-    <h2>Instructor Dashboard</h2>
-    <button id="logout">Logout</button>
-  </nav>
 
-  <section id="selector">
-    <h3>Select Subject and Section</h3>
-    <div class="selectors">
-      <select id="subject">
-        <option value="">Select Subject</option>
-        <option value="IT35">IT35</option>
-        <option value="IT36">IT36</option>
-        <option value="IT37">IT37</option>
-        <option value="IT38">IT38</option>
-        <option value="IT39">IT39</option>
-        <option value="GE10">GE10</option>
-        <option value="GE11">GE11</option>
-        <option value="GE12">GE12</option>
-        <option value="CCS6">CCS6</option>
-        <option value="RSS6">RSS6</option>
-      </select>
+  
 
-      <select id="section">
-        <option value="">Select Section</option>
-        <option value="3A">Block 3A</option>
-        <option value="3B">Block 3B</option>
-        <option value="3C">Block 3C</option>
-      </select>
-    </div>
-  </section>
-
-  <section id="post-announcement">
-    <h3>Post Announcement</h3>
-    <form id="announcement-form">
-      <textarea id="announcement" placeholder="Write your announcement..." required></textarea>
-      <button type="submit">Post</button>
-    </form>
-  </section>
-
-  <section id="schedule">
-    <h3>My Schedule</h3>
-    <table id="schedule-table">
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Mon</th>
-          <th>Tue</th>
-          <th>Wed</th>
-          <th>Thu</th>
-          <th>Fri</th>
-          <th>Sat</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
- 
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-    const supabase = createClient(
-      "https://pukbullejohkrxcgvwud.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1a2J1bGxlam9oa3J4Y2d2d3VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4MjIwNTUsImV4cCI6MjA1OTM5ODA1NX0.ovymArfcov-lwFQM5_NqLWO8tly-Az8emHps80e2tqo"
-    );
-
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      window.location.href = "login.html";
-    } else {
-      console.log("Logged in user:", session.user);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instructor Announcement Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .announcement-card {
+      transition: all 0.3s ease;
     }
+    .announcement-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    #announcement {
+      min-height: 150px;
+    }
+    .schedule-cell {
+      transition: all 0.2s ease;
+    }
+    .schedule-cell:hover {
+      background-color: #f0f9ff;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen">
+  <!-- Navigation -->
+<nav class="bg-blue-600 text-white shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <div class="flex items-center">
+        <i class="fas fa-chalkboard-teacher text-2xl mr-3"></i>
+        <h2 class="text-xl font-bold">Instructor Announcement Portal</h2>
+      </div>
+      <button id="logout" class="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+      </button>
+    </div>
+  </div>
+</nav>
 
-    document.getElementById("logout").addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      window.location.href = "login.html";
-    });
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Welcome Banner -->
+      <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 mb-8 shadow-lg">
+        <div class="flex items-center">
+          <div class="mr-4">
+            <i class="fas fa-bullhorn text-4xl"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold">Welcome, Professor!</h1>
+            <p class="opacity-90">Post important announcements to your students</p>
+          </div>
+        </div>
+      </div>
 
-    // Announcement submission logic with error handling
-    document.getElementById("announcement-form").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const announcementText = document.getElementById("announcement").value.trim();
-      
-      if (!announcementText) {
-        console.error("Announcement cannot be empty.");
-        alert("Please write an announcement before posting.");
-        return;
-      }
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column -->
+        <div class="lg:col-span-2 space-y-8">
+          <!-- Subject Selection -->
+          <section class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center mb-4">
+              <i class="fas fa-book-open text-blue-500 mr-3 text-xl"></i>
+              <h3 class="text-lg font-semibold text-gray-800">Select Subject and Section</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                <select id="subject" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 border">
+                  <option value="">Select Subject</option>
+                  <option value="IT35">IT35 - Web Development</option>
+                  <option value="IT36">IT36 - Database Systems</option>
+                  <option value="IT37">IT37 - Networking</option>
+                  <option value="IT38">IT38 - Software Engineering</option>
+                  <option value="IT39">IT39 - Mobile Development</option>
+                  <option value="GE10">GE10 - Mathematics</option>
+                  <option value="GE11">GE11 - Science</option>
+                  <option value="GE12">GE12 - Ethics</option>
+                  <option value="CCS6">CCS6 - Capstone Project</option>
+                  <option value="RSS6">RSS6 - Research Methods</option>
+                </select>
+              </div>
+              
+              <div>
+                <label for="section" class="block text-sm font-medium text-gray-700 mb-1">Section</label>
+                <select id="section" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 border">
+                  <option value="">Select Section</option>
+                  <option value="3A">Block 3A</option>
+                  <option value="3B">Block 3B</option>
+                  <option value="3C">Block 3C</option>
+                  <option value="4A">Block 4A</option>
+                  <option value="4B">Block 4B</option>
+                </select>
+              </div>
+            </div>
+          </section>
 
-      try {
-        console.log("Posting Announcement:", announcementText);
-        // Handle the logic to store the announcement in the database here (e.g., Supabase)
-        const { data, error } = await supabase
-          .from('announcements') // Assuming you have an 'announcements' table
-          .insert([{ announcement_text: announcementText, posted_at: new Date() }]);
+          <!-- Announcement Form -->
+          <section class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center mb-4">
+              <i class="fas fa-bullhorn text-blue-500 mr-3 text-xl"></i>
+              <h3 class="text-lg font-semibold text-gray-800">Create Announcement</h3>
+            </div>
+            
+            <form id="announcement-form">
+              <div class="mb-4">
+                <label for="announcement-title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input type="text" id="announcement-title" placeholder="Announcement title..." class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 border mb-3">
+                
+                <label for="announcement" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                <textarea id="announcement" placeholder="Write your announcement here..." class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3 border"></textarea>
+              </div>
+              
+              <div class="flex justify-between items-center">
+                <div class="flex space-x-2">
+                  <button type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md flex items-center">
+                    <i class="fas fa-paperclip mr-2"></i> Attach File
+                  </button>
+                  <button type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md flex items-center">
+                    <i class="fas fa-calendar-alt mr-2"></i> Set Deadline
+                  </button>
+                </div>
+                
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md flex items-center">
+                  <i class="fas fa-paper-plane mr-2"></i> Post Announcement
+                </button>
+              </div>
+            </form>
+          </section>
 
-        if (error) {
-          console.error("Error posting announcement:", error.message);
-          alert("Failed to post announcement. Try again.");
-        } else {
-          console.log("Announcement posted successfully:", data);
-          alert("Announcement posted successfully.");
+          <!-- Recent Announcements -->
+          <section class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center">
+                <i class="fas fa-history text-blue-500 mr-3 text-xl"></i>
+                <h3 class="text-lg font-semibold text-gray-800">Recent Announcements</h3>
+              </div>
+              <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
+            </div>
+            
+            <div class="space-y-4" id="recent-announcements">
+              <!-- Sample announcement cards -->
+              <div class="announcement-card bg-blue-50 border-l-4 border-blue-500 rounded-r-md p-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">Assignment Submission Deadline Extended</h4>
+                    <p class="text-sm text-gray-600 mb-2">IT35 - Web Development | Block 3A</p>
+                    <p class="text-gray-700">The deadline for the final project submission has been extended to Friday, June 10th. Please use this extra time to polish your work.</p>
+                  </div>
+                  <span class="text-xs text-gray-500">2 hours ago</span>
+                </div>
+              </div>
+              
+              <div class="announcement-card bg-green-50 border-l-4 border-green-500 rounded-r-md p-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">Class Cancellation Notice</h4>
+                    <p class="text-sm text-gray-600 mb-2">IT36 - Database Systems | Block 3B</p>
+                    <p class="text-gray-700">There will be no class this Wednesday, June 8th. We will resume next week with our scheduled topics.</p>
+                  </div>
+                  <span class="text-xs text-gray-500">1 day ago</span>
+                </div>
+              </div>
+              
+              <div class="announcement-card bg-yellow-50 border-l-4 border-yellow-500 rounded-r-md p-4">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">Important: Exam Schedule Change</h4>
+                    <p class="text-sm text-gray-600 mb-2">GE10 - Mathematics | All Sections</p>
+                    <p class="text-gray-700">The midterm exam originally scheduled for June 15th has been moved to June 17th. Please adjust your study schedules accordingly.</p>
+                  </div>
+                  <span class="text-xs text-gray-500">3 days ago</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-8">
+          <!-- Instructor Profile -->
+          <section class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center mb-4">
+              <i class="fas fa-user-tie text-blue-500 mr-3 text-xl"></i>
+              <h3 class="text-lg font-semibold text-gray-800">Instructor Profile</h3>
+            </div>
+            
+            <div class="flex items-center mb-4">
+              <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                <i class="fas fa-user text-blue-500 text-2xl"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-gray-800">Dr. G3ntl3m3n</h4>
+                <p class="text-sm text-gray-600">Associate Professor</p>
+                <p class="text-sm text-gray-600">Computer Science Department</p>
+              </div>
+            </div>
+            
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center">
+                <i class="fas fa-envelope text-gray-400 mr-2 w-5"></i>
+                <span>mrRobot@nbsc.edu.pc</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-phone-alt text-gray-400 mr-2 w-5"></i>
+                <span>(555) 123-4567</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-clock text-gray-400 mr-2 w-5"></i>
+                <span>Office Hours: Mon/Wed 2-4pm</span>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-map-marker-alt text-gray-400 mr-2 w-5"></i>
+                <span>Building A, Room 205</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Schedule -->
+          <section class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center mb-4">
+              <i class="fas fa-calendar-alt text-blue-500 mr-3 text-xl"></i>
+              <h3 class="text-lg font-semibold text-gray-800">Teaching Schedule</h3>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="min-w-full">
+                <thead>
+                  <tr class="border-b">
+                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-2">Time</th>
+                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-2">Mon</th>
+                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-2">Tue</th>
+                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-2">Wed</th>
+                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-2">Thu</th>
+                    <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider py-2">Fri</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr>
+                    <td class="py-2 text-sm font-medium text-gray-900">8:00-9:30</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">IT35<br>3A</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">IT35<br>3A</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">IT35<br>3A</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 text-sm font-medium text-gray-900">9:30-11:00</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">IT36<br>3B</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">IT36<br>3B</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 text-sm font-medium text-gray-900">11:00-12:30</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">GE10<br>4A</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">GE10<br>4A</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">GE10<br>4A</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 text-sm font-medium text-gray-900">1:30-3:00</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">IT37<br>3C</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">IT37<br>3C</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 text-sm font-medium text-gray-900">3:00-4:30</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">Office<br>Hours</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500">Office<br>Hours</td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                    <td class="schedule-cell py-2 text-sm text-gray-500"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Quick Stats -->
+          <section class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex items-center mb-4">
+              <i class="fas fa-chart-bar text-blue-500 mr-3 text-xl"></i>
+              <h3 class="text-lg font-semibold text-gray-800">Quick Stats</h3>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-blue-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-blue-600">5</div>
+                <div class="text-sm text-gray-600">Active Courses</div>
+              </div>
+              <div class="bg-green-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-green-600">142</div>
+                <div class="text-sm text-gray-600">Total Students</div>
+              </div>
+              <div class="bg-purple-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-purple-600">23</div>
+                <div class="text-sm text-gray-600">Announcements</div>
+              </div>
+              <div class="bg-yellow-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-yellow-600">3</div>
+                <div class="text-sm text-gray-600">Upcoming Deadlines</div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Supabase integration (same as original)
+    document.addEventListener('DOMContentLoaded', function() {
+      // Logout functionality
+      document.getElementById('logout').addEventListener('click', function() {
+        // Add logout logic here
+        console.log('Logging out...');
+        // window.location.href = 'login.html';
+      });
+
+      // Announcement form submission
+      document.getElementById('announcement-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const subject = document.getElementById('subject').value;
+        const section = document.getElementById('section').value;
+        const title = document.getElementById('announcement-title').value;
+        const message = document.getElementById('announcement').value;
+        
+        if (!subject || !section) {
+          alert('Please select both subject and section');
+          return;
         }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        alert("An unexpected error occurred.");
-      }
+        
+        if (!title || !message) {
+          alert('Please fill in both title and message');
+          return;
+        }
+        
+        // Here you would typically send this to your backend/Supabase
+        console.log('Posting announcement:', {
+          subject,
+          section,
+          title,
+          message,
+          date: new Date().toISOString()
+        });
+        
+        // Create a new announcement card
+        const announcementCard = document.createElement('div');
+        announcementCard.className = 'announcement-card bg-blue-50 border-l-4 border-blue-500 rounded-r-md p-4';
+        announcementCard.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="font-semibold text-gray-800">${title}</h4>
+              <p class="text-sm text-gray-600 mb-2">${subject} | ${section}</p>
+              <p class="text-gray-700">${message}</p>
+            </div>
+            <span class="text-xs text-gray-500">Just now</span>
+          </div>
+        `;
+        
+        // Prepend to recent announcements
+        const recentAnnouncements = document.getElementById('recent-announcements');
+        recentAnnouncements.insertBefore(announcementCard, recentAnnouncements.firstChild);
+        
+        // Clear form
+        document.getElementById('announcement-title').value = '';
+        document.getElementById('announcement').value = '';
+        
+        // Show success message
+        alert('Announcement posted successfully!');
+      });
     });
   </script>
- 
-  <script src="script.js"></script>
+
+
+
+<!-- Logout Script -->
+<script>
+  document.getElementById('logout').addEventListener('click', function () {
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.href = 'login.html';
+  });
+</script>
+
+
+
+
+
 </body>
 </html>
