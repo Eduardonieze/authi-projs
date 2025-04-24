@@ -1,3 +1,3 @@
 const { createClient } = supabase;
 
-const supabaseClient = createClient('https://pukbullejohkrxcgvwud.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1a2J1bGxlam9oa3J4Y2d2d3VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM4MjIwNTUsImV4cCI6MjA1OTM5ODA1NX0.ovymArfcov-lwFQM5_NqLWO8tly-Az8emHps80e2tqo');
+const supabaseClient = createClient('https://ixhceohsjzdhgokxnfoo.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4aGNlb2hzanpkaGdva3huZm9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU0NjQyMjcsImV4cCI6MjA2MTA0MDIyN30.Io6Wh8o_uzaToqJqcN2DGExdoV0bvUfiRZA8_Mnq_l4');
