@@ -4,7 +4,169 @@
   <meta charset="UTF-8" />
   <title>Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #8a2be2;
+      --primary-dark: #5f00a8;
+      --primary-light: #b57edc;
+      --background: #1a1a2e;
+      --text: #f8f8f8;
+      --text-secondary: #d1d1d1;
+      --card-bg: #16213e;
+      --input-bg: #0f3460;
+      --error: #e94560;
+      --success: #4ade80;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--primary-light);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input {
+      padding: 12px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: var(--input-bg);
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    button {
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .oauth-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background-color: #4285F4;
+      padding: 12px;
+      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      border: none;
+      width: 100%;
+    }
+
+    .oauth-btn:hover {
+      background-color: #357ABD;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 1rem 0;
+      color: var(--text-secondary);
+    }
+
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid var(--text-secondary);
+    }
+
+    .divider::before {
+      margin-right: 1rem;
+    }
+
+    .divider::after {
+      margin-left: 1rem;
+    }
+
+    p {
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    a {
+      color: var(--primary-light);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--primary-color);
+      text-decoration: underline;
+    }
+
+    .alert {
+      padding: 12px;
+      border-radius: 5px;
+      margin-top: 1rem;
+      text-align: center;
+      display: none;
+    }
+
+    .error {
+      background-color: rgba(233, 69, 96, 0.2);
+      color: var(--error);
+      display: block;
+    }
+
+    .success {
+      background-color: rgba(74, 222, 128, 0.2);
+      color: var(--success);
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <div class="login-container">
@@ -13,7 +175,14 @@
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="password" placeholder="Password" required />
       <button type="submit">Login</button>
-      <p style="text-align: center;">Don't have an account? <a href="register.html">Register</a></p>
+      
+      <div class="divider">OR</div>
+      
+      <button type="button" class="oauth-btn" id="googleLogin">
+        <i class="fab fa-google"></i> Continue with Google
+      </button>
+      
+      <p>Don't have an account? <a href="register.html">Register</a></p>
       <div class="alert" id="message"></div>
     </form>
   </div>
